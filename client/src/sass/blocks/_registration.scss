@@ -1,0 +1,43 @@
+.registration {
+    &__form {
+        position: relative;
+        z-index: 10;
+        display: none;
+    }
+    
+    &__input {
+        width: 100%;
+        min-height: 64px;
+        background-color: $main-color;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 18px;
+        color: #fff;
+        caret-color: #3A7CFD;
+        padding: 20px 50px 20px 72px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        margin-top: 10px;
+
+        &::placeholder {
+            color: #767992;
+        }
+    }
+
+    &__btn {
+        width: 217px;
+        height: 50px;
+        border-radius: 6px;
+        border: none;
+        background-color: $main-color;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 18px;
+        color: #fff;
+        display: block;
+        margin: 0 auto;
+        margin-top: 20px;
+        outline: none;
+    }
+}

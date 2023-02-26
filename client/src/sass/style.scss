@@ -1,0 +1,50 @@
+@import 'libs/bootstrap-reboot.min';
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+@import 'base/variables';
+
+* {
+    font-family: 'Red Hat Display', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 540px;
+    margin: 0 auto;
+}
+
+
+@import 'blocks/advantages';
+@import 'blocks/registration';
+@import 'blocks/navigation';
+
+
+.wrapper {
+    display: flex;
+    justify-content: space-around;
+}
+
+.authorization-btn, .registration-btn {
+    font-size: 23px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    &:hover {
+        color: #55DDFF;
+    }
+}
+
+.active {
+    display: block;
+}
+
+.active-btn {
+    color: #55DDFF;
+}
+
+.authorization__message {
+    text-align: center;
+    color: red;
+    font-size: 19px;
+}
