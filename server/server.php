@@ -25,24 +25,6 @@
         $data = json_decode($your_json_string, TRUE);
 
         if(!empty($data)) {
-
-//            if(isset($data['auth'])) {
-//                $name = $data['login'];
-//                $password = $data['password'];
-//
-//                $select = mysqli_query($db_connect, "SELECT name, password FROM `users`") or die("Неудалось выполнить запрос");
-//
-//                foreach ($select as $item) {
-//                    if($name == $item['name'] && $password == $item['password']) {
-////                        mysqli_query($db_connect, "INSERT INTO `users` (name, password) VALUES ('1', '1')");
-//                        die();
-//                    }
-//                }
-//
-//
-//
-//            }
-
             if(isset($data['bool'])) {
                 $userId = $data['userId'];
                 $text = $data['text'];
@@ -56,8 +38,9 @@
                 $id = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
                 $login = $data["login"];
                 $password = $data["password"];
+                $filter = $data["filter"];
 
-                $querySubmit = "INSERT INTO `users` (id, name, password) VALUES('".$id."','".$login."', '".$password."')";
+                $querySubmit = "INSERT INTO `users` (id, name, password, filter) VALUES('".$id."','".$login."', '".$password."', '".$filter."')";
                 $sql_query = mysqli_query($db_connect, $querySubmit);
 
                 echo $sql_query;
@@ -77,6 +60,15 @@
         }
 
         echo json_encode($tasks);
+    }
+
+    if(isset($_GET['updateFilter'])) {
+
+        $userId = $_GET["userId"];
+        $updateFilter = $_GET['bool'];
+
+        $queryUpdate = "UPDATE `users` SET `filter` = '".$updateFilter."' WHERE `id` = ".$userId;
+        $resultUpdate = mysqli_query($db_connect, $queryUpdate) or die('Запрос не удался: ' . mysqli_error($db_connect));
     }
 
     if(isset($_GET["userName"])) {

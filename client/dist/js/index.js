@@ -63,11 +63,12 @@ const div1 = document.querySelector('.advantages__tasks-header'),
     closeElem = document.querySelector('.menu__close');
 let blocks = '',
     userName = '',
-    userId = '';
+    userId = '',
+    filterCount = 0;
 
 
 function getData() {
-    fetch('http://testajax:80/server.php?data=true', {
+    fetch('http://todo:80/server/server.php?data=true', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -76,7 +77,7 @@ function getData() {
     .then(data => data.json())
     .then(data => {
 
-        fetch('http://testajax:80/server.php?userName=true', {
+        fetch('http://todo:80/server/server.php?userName=true', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -126,7 +127,7 @@ function getData() {
             b3.forEach(item => {
                 item.addEventListener('click', () => {
                     const del = item.parentNode.getAttribute('data-id');
-                    fetch(`http://testajax:80/server.php?deleteId=${del}`, {
+                    fetch(`http://todo:80/server/server.php?deleteId=${del}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -162,7 +163,7 @@ function getData() {
                     //     item.childNodes[0].classList.toggle('advantages__tasks-img-active');
                     // }
 
-                    fetch(`http://testajax:80/server.php?updateCheck=true&id=${String(item.parentNode.getAttribute('data-id'))}&bool=${String(item.parentNode.childNodes[3].getAttribute('data-bool'))}`, {
+                    fetch(`http://todo:80/server/server.php?updateCheck=true&id=${String(item.parentNode.getAttribute('data-id'))}&bool=${String(item.parentNode.childNodes[3].getAttribute('data-bool'))}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -184,7 +185,7 @@ function getData() {
                         let parentDivItem = item.parentNode;
                         let childInput = parentDivItem.childNodes[1];
 
-                        fetch(`http://testajax:80/server.php?update=true&id=${item.parentNode.getAttribute('data-id')}&text=${childInput.value}&bool=${String(item.parentNode.childNodes[3].getAttribute('data-bool'))}`, {
+                        fetch(`http://todo:80/server/server.php?update=true&id=${item.parentNode.getAttribute('data-id')}&text=${childInput.value}&bool=${String(item.parentNode.childNodes[3].getAttribute('data-bool'))}`, {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -208,6 +209,7 @@ function getData() {
                         blocks.forEach(key => {
                             key.style.display = 'block';
                         });
+                        filterCount = 0;
                     } else if (item == all[1]) {
                         blocks.forEach(key => {
                             key.style.display = 'none';
@@ -215,6 +217,7 @@ function getData() {
                                 key.style.display = 'block';
                             }
                         });
+                        filterCount = 1;
                     } else {
                         blocks.forEach(key => {
                             key.style.display = 'none';
@@ -222,7 +225,18 @@ function getData() {
                                 key.style.display = 'block';
                             }
                         });
+                        filterCount = 2;
                     }
+
+                    fetch(`http://todo:80/server/server.php?updateFilter=true&id=${userId}&filter=${filterCount}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                        }
+                    })
+                    .then(() => {
+                        getData();
+                    })
                 });
             });
         });
@@ -236,15 +250,16 @@ getData();
 
 regBtn.addEventListener('click', () => {
     if(regLogin.value != '' && regPass != '') {
-        fetch('http://testajax:80/server.php', {
+        fetch('http://todo:80/server/server.php', {
             method: 'POST',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
             },
             body: JSON.stringify({
-                "login": regLogin.value,
-                "password": regPass.value
+                "login": String(regLogin.value),
+                "password": String(regPass.value),
+                "filter": "0"
             })
         }) 
         .then(() => {
@@ -262,7 +277,7 @@ regBtn.addEventListener('click', () => {
 authBtn.addEventListener('click', () => {
     if(authLogin.value != '' && authPass.value != '') {
 
-        fetch('http://testajax:80/server.php?auth=true', {
+        fetch('http://todo:80/server/server.php?auth=true', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -317,7 +332,7 @@ reg.forEach(item => {
 
 i1.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        fetch('http://testajax:80/server.php', {
+        fetch('http://todo:80/server/server.php', {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -339,7 +354,7 @@ i1.addEventListener('keypress', (e) => {
 });
 
 clear.addEventListener('click', () => {
-    fetch('http://testajax:80/server.php?deleteAll=true', {
+    fetch('http://todo:80/server/server.php?deleteAll=true', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
