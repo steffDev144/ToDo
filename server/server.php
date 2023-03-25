@@ -12,12 +12,16 @@
         "DBNAME" => "ajax1"  //Field for name DB in PMA
     ]);
 
+    require_once 'image.php';
+    $standartImg = img();
+
     $db_connect = mysqli_connect(DATEBASE["DBHOST"], DATEBASE["DBUSER"], DATEBASE["DBPASS"], DATEBASE["DBNAME"]);
 
     if($db_connect == false || $db_connect == 'false' || $db_connect === false) {
         echo "<h4 style='color: red; font-family: sans-serif;'>Ошибка соединения с базой данных!</h4>";
         die;
     }
+
 
     if(!empty($_POST)) {
 
@@ -32,25 +36,30 @@
 
                 $query = "INSERT INTO `tasks` (idUser, text, bool) VALUE ('".$userId."','".$text."', '".$bool."')";
                 $sql_query = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
-
             }
-            else {
+            if(isset($data['userImg'])) {
+                $userId = $data['userId'];
+                $userImg = $data['userImg'];
+
+                $query = "UPDATE `users` SET `image` = '".$userImg."' WHERE `id` = '".$userId."'";
+                $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
+            }
+            if(isset($data["filter"])) {
                 $id = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
                 $login = $data["login"];
                 $password = $data["password"];
                 $filter = $data["filter"];
 
-                $querySubmit = "INSERT INTO `users` (id, name, password, filter) VALUES('".$id."','".$login."', '".$password."', '".$filter."')";
+                $querySubmit = "INSERT INTO `users` (id, name, password, filter, image) VALUES('".$id."','".$login."', '".$password."', '".$filter."', '".$standartImg."')";
                 $sql_query = mysqli_query($db_connect, $querySubmit);
 
                 echo $sql_query;
             }
-
         }
     }
 
     if($_GET["data"] == "true") {
-        $query = "SELECT * FROM `tasks`"; // WHERE `id` = 1
+        $query = "SELECT * FROM `tasks`";
         $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
 
         $tasks = [];
@@ -62,17 +71,61 @@
         echo json_encode($tasks);
     }
 
+    if(isset($_GET['updateName'])) {
+
+        $userId = $_GET['id'];
+        $updateUserName = $_GET['updateUserName'];
+
+        $query = "UPDATE `users` SET `name` = '".$updateUserName."' WHERE `id` = '".$userId."'";
+        $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
+    }
+
+    if(isset($_GET['updatePass'])) {
+
+        $userId = $_GET['userId'];
+        $updateUserPass = $_GET['updateUserPass'];
+
+        $query = "UPDATE `users` SET `password` = '".$updateUserPass."' WHERE `id` = '".$userId."'";
+        $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
+    }
+
     if(isset($_GET['updateFilter'])) {
 
-        $userId = $_GET["userId"];
-        $updateFilter = $_GET['bool'];
+        $userName = $_GET['name'];
+        $filterId = $_GET['filterId'];
 
-        $queryUpdate = "UPDATE `users` SET `filter` = '".$updateFilter."' WHERE `id` = ".$userId;
-        $resultUpdate = mysqli_query($db_connect, $queryUpdate) or die('Запрос не удался: ' . mysqli_error($db_connect));
+        $query = "UPDATE `users` SET `filter` = '".$filterId."' WHERE `name` = '".$userName."'";
+        $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
+    }
+
+    if(isset($_GET['loginGet'])) {
+        $query = "SELECT name FROM `users`";
+        $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
+
+        $tasks = [];
+
+        while($row1 = mysqli_fetch_assoc($result)) {
+            $tasks[] = $row1;
+        }
+
+        echo json_encode($tasks);
+    }
+
+    if(isset($_GET['filter'])) {
+        $query = "SELECT name, filter FROM `users`";
+        $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
+
+        $tasks = [];
+
+        while($row1 = mysqli_fetch_assoc($result)) {
+            $tasks[] = $row1;
+        }
+
+        echo json_encode($tasks);
     }
 
     if(isset($_GET["userName"])) {
-        $query = "SELECT name, id FROM `users`"; // WHERE `id` = 1
+        $query = "SELECT * FROM `users`"; // WHERE `id` = 1
         $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
 
         $tasks = [];
@@ -85,7 +138,7 @@
     }
 
     if(isset($_GET["auth"])) {
-        $query = "SELECT name, password FROM `users`"; // WHERE `id` = 1
+        $query = "SELECT * FROM `users`"; // WHERE `id` = 1
         $result = mysqli_query($db_connect, $query) or die('Запрос не удался: ' . mysqli_error($db_connect));
 
         $tasks = [];

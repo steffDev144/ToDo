@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.min.css">
     <title>ToDo</title>
+    <link rel="stylesheet" href="css/style.min.css">
 </head>
 
 <body>
@@ -46,12 +46,21 @@
     </div>
 
     <section class="advantages registration">
-        <header class="advantages__header"></header>
+        <header class="advantages__header">
+            <div class="advantages__header-shadow"></div>
+            <img class="advantages__header-img" src="img/Bitmap.jpg" alt="headerImg">
+        </header>
         <div class="container">
-            <div class="advantages__wrapper ">
+            <div class="advantages__wrapper">
                 <div class="advantages__logo">
                     <a href="#" class="advantages__text">T O D O</a>
-                    <a href="#" class="advantages__name"></a>
+                    <a href="#" class="advantages__name">
+                        <div class="advantages__hamburger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </a>
                     <!-- <img src="icons/Combined Shape.svg" alt="theme" class="advantages__logo-img"> -->
                 </div>
                 <div class="advantages__send">
@@ -59,14 +68,14 @@
                 </div>
                 <div class="advantages__tasks">
                     <div class="advantages__tasks-header">
-    
+
                     </div>
                     <div class="advantages__tasks-footer">
                         <div class="advantages__tasks-footer-item"><span>0</span> items left</div>
                         <div class="advantages__tasks-footer-items ">
-                            <div class="advantages__tasks-footer-link advantages__tasks-footer-link-active">All</div>
-                            <div class="advantages__tasks-footer-link">Active</div>
-                            <div class="advantages__tasks-footer-link">Completed</div>
+                            <div data-filter = "0" class="advantages__tasks-footer-link advantages__tasks-footer-link-active">All</div>
+                            <div data-filter = "1" class="advantages__tasks-footer-link">Active</div>
+                            <div data-filter = "2" class="advantages__tasks-footer-link">Completed</div>
                         </div>
                         <div class="advantages__tasks-footer-item clear">Clear Completed</div>
                     </div>
@@ -74,14 +83,16 @@
                 <div class="advantages__footer-text">Drag and drop to reorder list</div>
             </div>
 
-            <div class="registration__form" id="regForm">
+            <div class="registration__form " id="regForm">
                 <div class="wrapper">
                     <div class="authorization-btn">Авторизация</div>
                     <div class="registration-btn">Регистрация</div>
                 </div>
-                <input placeholder="login" class="registration__input" type="text" name="login" id="login">
-                <input placeholder="password" class="registration__input" type="password" name="password" id="password">
-                <button class="registration__btn" id="reg">Зарегестрироваться</button>
+                <div class="authorization__message"></div>
+                <input placeholder="Логин" class="registration__input" type="text" name="login" id="login">
+                <input placeholder="Пароль" class="registration__input" type="password" name="password" id="password">
+                <input placeholder="Повторите пароль" class="registration__input" type="password" name="password" id="password2">
+                <button class="registration__btn" style="outline: none;" id="reg">Зарегестрироваться</button>
             </div>
             <div class="registration__form active" id="authForm">
                 <div class="wrapper">
@@ -89,11 +100,49 @@
                     <div class="registration-btn">Регистрация</div>
                 </div>
                 <div class="authorization__message"></div>
-                <input placeholder="login" class="registration__input" type="text" name="login" id="authLogin">
-                <input placeholder="password" class="registration__input" type="password" name="password" id="authPassword">
-                <button class="registration__btn" id="logIn">Войти</button>
+                <input placeholder="Логин" class="registration__input" type="text" name="login" id="authLogin">
+                <input placeholder="Пароль" class="registration__input" type="password" name="password" id="authPassword">
+                <button class="registration__btn" style="outline: none;" id="logIn">Войти</button>
             </div>
         </div>
+    </section>
+
+    <section class="profile">
+        <header class="advantages__header profile__header">
+            <div class="advantages__header-shadow"></div>
+            <form class="profile__form">
+                <input class="profile__header-input" id="file" type="file" name="file">
+                <label class="profile__header-label" for="file">
+                    <div class="profile__header-img">
+                        <img src="icons/Union.png" alt="img">
+                    </div>
+                    <p>Изменить задний фон</p>
+                </label>
+                <div class="profile__text"></div>
+            </form>
+            <div class="profile__wrapper">
+                <div class="advantages__tasks-item">
+                    <label for="profile-name" style="color: #fff;">Изменить имя</label>
+                    <input id="profile-name" type="text" class="profile-input profile-name">
+                </div>
+                <div class="advantages__tasks-item" style="margin-top: 15px;">
+                    <label for="profile-pass" style="color: #fff;">Изменить пароль</label>
+                    <input id="profile-pass" type="text" class="profile-input profile-pass">
+                </div>
+            </div>
+            <button class="profile__btn" style="outline: none;">Сохранить</button>
+        </header>
+        <div class="profile__block">
+            <div class="profile__round">
+                <img src="icons/back.png" alt="back">
+            </div>
+        </div>
+        <div class="profile__success">
+            <div class="profile__success-title">Все изменения сохранены</div>
+            <div class="profile__success-btn">Готово</div>
+        </div>
+        <div class="shadow"></div>
+        
     </section>
 
     <script src="js/index.js"></script>

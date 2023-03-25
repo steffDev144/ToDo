@@ -9,15 +9,18 @@
     padding: 0;
 }
 
+
+
 .container {
     width: 540px;
     margin: 0 auto;
 }
 
 
-@import 'blocks/advantages';
-@import 'blocks/registration';
-@import 'blocks/navigation';
+@import 'blocks/_advantages';
+@import 'blocks/_registration';
+@import 'blocks/_navigation';
+@import 'blocks/_profile-page';
 
 
 .wrapper {
@@ -32,10 +35,25 @@
     cursor: pointer;
     &:hover {
         color: #55DDFF;
+        text-decoration: none;
     }
 }
 
+.shadow {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.5);
+}
+
 .active {
+    display: block;
+}
+
+.active__suc {
     display: block;
 }
 
@@ -48,3 +66,4 @@
     color: red;
     font-size: 19px;
 }
+

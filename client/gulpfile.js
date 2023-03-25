@@ -45,8 +45,7 @@ gulp.task('html', function () {
 
 gulp.task('scripts', function () {
     return gulp.src("src/**/*.js")
-        .pipe(gulp.dest("dist"))
-        .pipe(browserSync.stream());
+        .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('fonts', function () {

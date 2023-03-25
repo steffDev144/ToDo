@@ -40,32 +40,58 @@
 
 */
 
+
 const div1 = document.querySelector('.advantages__tasks-header'),
       exit = document.querySelector('#exit'),
       auth = document.querySelectorAll('.authorization-btn'),
       reg = document.querySelectorAll('.registration-btn'),
       outUserName = document.querySelector('.advantages__name'),
       wrapper = document.querySelector('.advantages__wrapper'),
-      regForm = document.querySelector('#regForm'),
-      regBtn = document.querySelector('#reg'),
-      regLogin = document.querySelector('#login'),
-      regPass = document.querySelector('#password'),
-      authLogin = document.querySelector('#authLogin'),
-      authPass = document.querySelector('#authPassword'),
-      authBtn = document.querySelector('#logIn'),
-      authForm = document.querySelector('#authForm'),
+      profile = document.querySelector('.profile'),
+      profileLink = document.querySelector('#profile'),
       clear = document.querySelector('.clear'),
+      profileSuccess = document.querySelector('.profile__success'),
+      profileShadow = document.querySelector('.shadow'),
+      profileSuccessBtn = document.querySelector('.profile__success-btn'),
+      profileName = document.querySelector('.profile-name'),
+      profilePass = document.querySelector('#profile-pass'),
+      profileBack = document.querySelector('.profile__round'),
+      headerImg = document.querySelector('.advantages__header-img'),
+      inputFile = document.querySelector('#file'),
     //   div2 = document.querySelector('.div-2'),
     //   b1 = document.querySelector('.b-1'),
     i1 = document.querySelector('.i-1'),
     out1 = document.querySelector('.advantages__tasks-footer-item span'),
     menu = document.querySelector('.menu'),
-    closeElem = document.querySelector('.menu__close');
+    closeElem = document.querySelector('.menu__close'),
+    authLogin = document.querySelector('#authLogin'),
+    authPass = document.querySelector('#authPassword'),
+    authBtn = document.querySelector('#logIn'),
+    authForm = document.querySelector('#authForm'),
+    regForm = document.querySelector('#regForm'),
+    regBtn = document.querySelector('#reg'),
+    regLogin = document.querySelector('#login'),
+    regPass = document.querySelector('#password'),
+    regPass2 = document.querySelector('#password2'),
+    uploadFileBtn = document.querySelector('.profile__btn'),
+    userFile = document.querySelector('.profile__header-input');
+
 let blocks = '',
     userName = '',
     userId = '',
-    filterCount = 0;
+    userPass = '',
+    userImage = '',
+    num = 0,
+    pimg = 0,
+    pname = 0,
+    ppass = 0;
 
+if(localStorage.getItem('name')) {
+    userName = localStorage.getItem('name');
+    regForm.classList.remove('active');
+    authForm.classList.remove('active');
+    wrapper.classList.add('active');
+}
 
 function getData() {
     fetch('http://todo:80/server/server.php?data=true', {
@@ -85,10 +111,14 @@ function getData() {
         })
         .then(arr => arr.json())
         .then(arr => {
-            outUserName.textContent = userName;
             arr.forEach(item => {
                 if(userName == item['name']) {
                     userId = item['id'];
+                    userImage = item['image'];
+                    userPass = item['password'];
+
+                    // console.log(userImage);
+                    headerImg.src = userImage;
                 }
             });
 
@@ -106,10 +136,57 @@ function getData() {
                             <br/>
                         </div>
                     `; 
+                    div1.classList.add('active');
                 }
                 
             });
             out1.textContent = count;
+            
+            blocks = document.querySelectorAll('.advantages__tasks-item');
+            
+            if(typeof(all) != 'undefined') {
+                fetch(`http://todo:80/server/server.php?filter=true`, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                    }
+                })
+                .then(data => data.json())
+                .then(data => {
+                    // console.log(data);
+                    data.forEach(item => {
+                        if(item['name'] == userName) {
+                            all.forEach(item => {
+                                item.classList.remove('advantages__tasks-footer-link-active');
+                            });
+                            if(item['filter'] == 1) {
+                                blocks.forEach(key => {
+                                    key.style.display = 'none';
+                                    if (key.childNodes[3].getAttribute('data-bool') == 'false') {
+                                        key.style.display = 'block';
+                                    }
+                                });
+                                all[1].classList.add('advantages__tasks-footer-link-active');
+                            } else if(item['filter'] == 2) {
+                                blocks.forEach(key => {
+                                    key.style.display = 'none';
+                                    if (key.childNodes[3].getAttribute('data-bool') == 'true') {
+                                        key.style.display = 'block';
+                                    }
+                                });
+                                all[2].classList.add('advantages__tasks-footer-link-active');
+                            } else {
+                                blocks.forEach(key => {
+                                    key.style.display = 'block';
+                                });
+                                all[0].classList.add('advantages__tasks-footer-link-active');
+                            }
+                        }
+                    })
+                })
+            } else {
+                console.log("undef")
+            }
 
 
         
@@ -136,7 +213,6 @@ function getData() {
                     .then(() => {
                         
                         item.parentNode.remove();
-                        out1.textContent = blocks.length;
                         getData();
                     });
                 });
@@ -175,7 +251,6 @@ function getData() {
                 });
             });
 
-            blocks = document.querySelectorAll('.advantages__tasks-item');
 
             const b4 = document.querySelectorAll('.advantages__tasks-input');
 
@@ -197,48 +272,8 @@ function getData() {
                     }
                 });
             });
-            const all = document.querySelectorAll('.advantages__tasks-footer-link');
 
-            all.forEach(item => {
-                item.addEventListener('click', () => {
-                    all.forEach(item => {
-                        item.classList.remove('advantages__tasks-footer-link-active');
-                    });
-                    item.classList.add('advantages__tasks-footer-link-active');
-                    if (item == all[0]) {
-                        blocks.forEach(key => {
-                            key.style.display = 'block';
-                        });
-                        filterCount = 0;
-                    } else if (item == all[1]) {
-                        blocks.forEach(key => {
-                            key.style.display = 'none';
-                            if (key.childNodes[3].getAttribute('data-bool') == 'false') {
-                                key.style.display = 'block';
-                            }
-                        });
-                        filterCount = 1;
-                    } else {
-                        blocks.forEach(key => {
-                            key.style.display = 'none';
-                            if (key.childNodes[3].getAttribute('data-bool') == 'true') {
-                                key.style.display = 'block';
-                            }
-                        });
-                        filterCount = 2;
-                    }
-
-                    fetch(`http://todo:80/server/server.php?updateFilter=true&id=${userId}&filter=${filterCount}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-                        }
-                    })
-                    .then(() => {
-                        getData();
-                    })
-                });
-            });
+            
         });
     }) 
     .catch(() => {
@@ -248,35 +283,85 @@ function getData() {
 
 getData();
 
+inputFile.addEventListener('change', () => {
+    pimg = 1;
+    const file = userFile.files[0],
+          reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+        headerImg.src = reader.result;
+    },false);
+
+    if (file) {
+        reader.readAsDataURL(file)
+    }
+});
+
 regBtn.addEventListener('click', () => {
-    if(regLogin.value != '' && regPass != '') {
-        fetch('http://todo:80/server/server.php', {
-            method: 'POST',
-            mode: 'cors',
+    if(regLogin.value != '' && regPass.value != '' && regPass.value == regPass2.value) {
+
+        fetch('http://todo:80/server/server.php?loginGet=true', {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-            },
-            body: JSON.stringify({
-                "login": String(regLogin.value),
-                "password": String(regPass.value),
-                "filter": "0"
-            })
-        }) 
-        .then(() => {
-            userName = regLogin.value;
-            regLogin.value = '';
-            regPass.value = '';
-            regForm.classList.remove('active');
-            wrapper.classList.add('active');
-            getData();
+            }
         })
+        .then(data => data.json())
+        .then(data => {
+            let c = 0;
+            data.forEach(item => {
+                if(item['name'] == regLogin.value) {
+                    num = 0;
+                    c = 1
+                } else {
+                    num = 1;
+                }
+            })
+
+            if(num == 1 & c != 1) {
+                fetch('http://todo:80/server/server.php', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                    },
+                    body: JSON.stringify({
+                        "login": String(regLogin.value),
+                        "password": String(regPass.value),
+                        "filter": "0"       
+                    })
+                })
+                .then(() => {
+                    userName = regLogin.value;
+                    regLogin.value = '';
+                    regPass.value = '';
+                    regForm.classList.remove('active');
+                    wrapper.classList.add('active');
+                    localStorage.setItem('name', userName);
+                    getData();
+                    reg.forEach(item => {
+                        item.classList.remove('active-btn');
+                    });
+                    auth.forEach(item => {
+                        item.classList.remove('active-btn');
+                    })
+                })
+            } else {
+                document.querySelector('.authorization__message').textContent = 'Пользователь с таким логином уже существует';
+            }
+        })
+    } else {
+        if(regLogin.value == '' || regPass.value == '' || regPass2.value == '') {
+            document.querySelector('.authorization__message').textContent = 'Не оставляйте поля ввода пустыми';
+        } else if(regPass.value != regPass2.value) {
+            document.querySelector('.authorization__message').textContent = 'Пароли не совпадают';
+        }
     }
     
 });
 
 authBtn.addEventListener('click', () => {
     if(authLogin.value != '' && authPass.value != '') {
-
         fetch('http://todo:80/server/server.php?auth=true', {
             method: 'GET',
             headers: {
@@ -293,15 +378,186 @@ authBtn.addEventListener('click', () => {
                     authPass.value = '';
                     authForm.classList.remove('active');
                     wrapper.classList.add('active');
+                    localStorage.setItem('name', userName);
                     getData();
-                } else {
-                    document.querySelector('.authorization__message').textContent = 'Вы ввели неправильный логин или пароль';
                 }
             });
+            document.querySelector('.authorization__message').textContent = 'Вы ввели неправильный логин или пароль';
             authPass.value = '';
         })
     }
     
+});
+
+profileLink.addEventListener('click', () => {
+    profileName.value = userName;
+    profilePass.value = userPass;
+    wrapper.classList.remove('active');
+    profile.classList.add('active');
+    menu.classList.remove('active');
+});
+
+profileName.addEventListener('keypress', (e) => {
+    pname = 1;
+    if(e.key == 'Enter') {
+        fetch(`http://todo:80/server/server.php?updateName=true&id=${userId}&updateUserName=${String(profileName.value)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }
+        })
+        .then(() => {
+            userName = profileName.value;
+            e.target.blur();
+            localStorage.setItem('name', `${profileName.value}`)
+            getData();
+        })
+    }
+});
+
+profilePass.addEventListener('keypress', (e) => {
+    ppass = 1;
+    if(e.key == 'Enter') {
+        fetch(`http://todo:80/server/server.php?updatePass=true&userId=${userId}&updateUserPass=${String(profilePass.value)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }
+        })
+        .then(() => {
+            userPass = profilePass.value;
+            e.target.blur();
+            getData();
+        })
+    }
+});
+
+profileBack.addEventListener('click', () => {
+    profile.classList.remove('active');
+    wrapper.classList.add('active');
+});
+
+uploadFileBtn.addEventListener('click', () => {
+    if(pimg == 1) {
+        fetch('http://todo:80/server/server.php', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            },
+            body: JSON.stringify({
+                "userId": String(userId),
+                "userImg": String(headerImg.src)
+            })
+        })
+        .then(() => {
+            pimg = 0;
+            getData();
+            profileShadow.classList.add('active');
+            profileSuccess.classList.add('active__suc');
+        })
+    }
+
+    if(pname == 1) {
+        fetch(`http://todo:80/server/server.php?updateName=true&id=${userId}&updateUserName=${String(profileName.value)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }
+        })
+        .then(() => {
+            pname = 0;
+            userName = profileName.value;
+            localStorage.setItem('name', `${userName}`)
+            getData();
+            profileShadow.classList.add('active');
+            profileSuccess.classList.add('active__suc');
+        })
+    }
+
+    if(ppass == 1) {
+        fetch(`http://todo:80/server/server.php?updatePass=true&userId=${userId}&updateUserPass=${String(profilePass.value)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }
+        })
+        .then(() => {
+            ppass = 0;
+            userPass = profilePass.value;
+            getData();
+            profileShadow.classList.add('active');
+            profileSuccess.classList.add('active__suc');
+        })
+    }
+});
+
+profileSuccessBtn.addEventListener('click', () => {
+    profileShadow.classList.remove('active');
+    profileSuccess.classList.remove('active__suc');
+});
+
+const all = document.querySelectorAll('.advantages__tasks-footer-link');
+
+all.forEach(item => {
+    item.addEventListener('click', () => {
+        all.forEach(item => {
+            item.classList.remove('advantages__tasks-footer-link-active');
+        });
+        item.classList.add('advantages__tasks-footer-link-active');
+        if (item == all[0]) {
+            blocks.forEach(key => {
+                key.style.display = 'block';
+            });
+
+            fetch(`http://todo:80/server/server.php?updateFilter=true&name=${userName}&filterId=0`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }
+            })
+            .then(() => {
+                // getData();
+            });
+            
+        } else if (item == all[1]) {
+            blocks.forEach(key => {
+                key.style.display = 'none';
+                if (key.childNodes[3].getAttribute('data-bool') == 'false') {
+                    key.style.display = 'block';
+                }
+            });
+
+            fetch(`http://todo:80/server/server.php?updateFilter=true&name=${userName}&filterId=1`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }
+            })
+            .then(() => {
+                // getData();
+            });
+        } else {
+            blocks.forEach(key => {
+                key.style.display = 'none';
+                if (key.childNodes[3].getAttribute('data-bool') == 'true') {
+                    key.style.display = 'block';
+                }
+            });
+
+            fetch(`http://todo:80/server/server.php?updateFilter=true&name=${userName}&filterId=2`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }
+            })
+            .then(() => {
+                // getData();
+            });
+        }
+
+        
+    });
 });
 
 auth.forEach(item => {
@@ -344,11 +600,11 @@ i1.addEventListener('keypress', (e) => {
                 "bool": 'false'
             })
         })
-            .then(() => {
-                getData();
-                i1.value = '';
-            })
-            .catch(e => console.error(e));
+        .then(() => {
+            getData();
+            i1.value = '';
+        })
+        .catch(e => console.error(e));
     }
 
 });
@@ -366,13 +622,18 @@ clear.addEventListener('click', () => {
 });
 
 exit.addEventListener('click', () => {
+    headerImg.src = "img/Bitmap.jpg";
     authForm.classList.add('active');
     document.querySelector('.authorization__message').textContent = '';
     wrapper.classList.remove('active');
     menu.classList.remove('active');
+    profile.classList.remove('active');
+    localStorage.removeItem('name');
     auth.forEach(item => {
         item.classList.add('active-btn');
-    });
+    })
+    div1.classList.remove('active');
+    out1.textContent = 0;
 });
 
 outUserName.addEventListener('click', () => {
@@ -390,21 +651,23 @@ counters.forEach((item, i) => {
     lines[i].style.width = item.innerHTML;
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-    const menu = document.querySelector('.menu'),
-          overlay = document.querySelector('.menu__overlay'),
-          elemClose = document.querySelectorAll('.menu__link');
-        //   mc = new Hammer(menu);
 
-    elemClose.forEach(item => {
-        item.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            menu.classList.remove('active');
-        });
-    });
 
-    overlay.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        menu.classList.remove('active');
-    });
-});
+// window.addEventListener('DOMContentLoaded', () => {
+//     const menu = document.querySelector('.menu'),
+//           overlay = document.querySelector('.menu__overlay'),
+//           elemClose = document.querySelectorAll('.menu__link');
+//         //   mc = new Hammer(menu);
+
+//     elemClose.forEach(item => {
+//         item.addEventListener('click', () => {
+//             hamburger.classList.remove('active');
+//             menu.classList.remove('active');
+//         });
+//     });
+
+//     overlay.addEventListener('click', () => {
+//         hamburger.classList.remove('active');
+//         menu.classList.remove('active');
+//     });
+// });
